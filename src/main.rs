@@ -49,7 +49,7 @@ fn signed_cert(ca_cert: &Certificate, dn_name: String) -> Certificate {
     let key_pair = KeyPair::generate(&rcgen::PKCS_ECDSA_P256_SHA256).unwrap();
 
     let mut dn = DistinguishedName::new();
-    dn.push(rcgen::DnType::CommonName, dn_name);
+    dn.push(rcgen::DnType::CommonName, dn_name.clone());
 
     let mut params = CertificateParams::default();
     params.distinguished_name = dn;
@@ -58,6 +58,7 @@ fn signed_cert(ca_cert: &Certificate, dn_name: String) -> Certificate {
     params.not_after = time::OffsetDateTime::now_utc() + time::Duration::days(365 * 20);
 
     params.subject_alt_names = vec![
+        SanType::DnsName(dn_name.clone()),
         SanType::DnsName(String::from("localhost")),
         SanType::IpAddress(std::net::IpAddr::V4(std::net::Ipv4Addr::new(127, 0, 0, 1))),
         SanType::IpAddress(std::net::IpAddr::V6(std::net::Ipv6Addr::new(
