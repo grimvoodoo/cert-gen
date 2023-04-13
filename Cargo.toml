@@ -1,6 +1,14 @@
 [package]
 name = "cert-gen"
 version = "0.1.0"
+authors = ["Andrew Cleveland andrew.cleveland@hotmail.co.uk"]
+licence = "MIT"
+description = "Generate a self-signed certificate using a ca for use with mtls"
+readme="readme.md"
+homepage="https://github.com/grimvoodoo"
+repository="https://github.com/grimvoodoo/cert-gen"
+keywords = ["rust", "tls", "mtls", "certificate", "cert", "ca", "self-signed"]
+catagories = ["network-programming", "security", "command-line-utilities"]
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html

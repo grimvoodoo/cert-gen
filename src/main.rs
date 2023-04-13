@@ -1,4 +1,17 @@
-#![allow(clippy::complexity, clippy::style, clippy::pedantic)]
+/// This is a Rust script that generates SSL certificates for use in local development environments.
+///
+/// It takes two command-line arguments: the first is either the path to an existing CA file or the
+/// string "new" to create a new CA; the second is the domain name you wish to create a certificate for.
+///
+/// The script uses the `rcgen` crate to generate a new certificate and key pair, then signs the certificate
+/// with the specified CA. It saves the certificate and key files to disk in the `certs` directory.
+///
+/// Usage:
+/// ```
+/// $ cargo run -- args...
+/// ```
+
+#[allow(clippy::complexity, clippy::style, clippy::pedantic)]
 extern crate openssl;
 extern crate pem;
 extern crate rcgen;
@@ -11,18 +24,33 @@ use rcgen::{
 
 use std::fs::File;
 use std::io::{BufReader, Read};
+use std::process::exit;
 use std::{env, fs};
+
+/// This is the main entry point for the program.
+///
+/// First it checks that the correct number of arguments have been passed in,
+/// then it checks if the first argument is "new" to create a new CA, or the path to an existing CA file.
+///
+/// The second argument is the domain name to generate the certificate for.
+///
+/// both are passed into the `signed_cert_with_ca` function to generate a new certificate and key pair
+/// signed by the specified CA.
 
 fn main() {
     let args: Vec<String> = env::args().collect();
     let ca_cert: Certificate;
 
     if args.len() != 3 {
-        println!("arg length is {}", args.len());
-        for x in args {
-            println!("{}", x)
-        }
-        panic!("Please enter either the path to an existing CA cert or 'new', This will generate a new CA. Then enter the subject name of the cert you want to create");
+        println!(
+            "There should be two arguments passed into this command \
+            the first is either the path to an existing ca file without any extensions \
+            or `new` which will create a new ca for you. The second argument should be \
+            the name of the domain you wish to create, for example `foobar.co.uk` instead \
+            you have passed in {} arguments",
+            args.len()
+        );
+        exit(1);
     }
 
     if args[1] == String::from("new") {
@@ -42,6 +70,16 @@ fn main() {
     let dn_name = args[2].clone();
     signed_cert_with_ca(ca_cert, dn_name)
 }
+
+/// Reads an existing CA certificate and private key from the specified PEM files.
+///
+/// # Arguments
+///
+/// * `ca_path` - The path to the CA file without any extension (e.g. "certs/rootca").
+///
+/// # Returns
+///
+/// The `Certificate` object for the CA, or an error if the PEM files could not be read or parsed.
 
 pub fn read_root_cert(ca_path: String) -> Result<Certificate, Box<dyn std::error::Error>> {
     // Open the PEM file containing both the certificate and private key
@@ -66,10 +104,14 @@ pub fn read_root_cert(ca_path: String) -> Result<Certificate, Box<dyn std::error
     // Create a new certificate using the CertificateParams object
     let ca_cert = Certificate::from_params(ca_cert_params)?;
 
-    //let ca_sign = CertificateSigningRequest::from_per(ca_cert.serialize_pem_with_signer(ca))?;
-
     Ok(ca_cert)
 }
+
+/// Generates a new CA certificate and private key.
+///
+/// # Returns
+///
+/// The `Certificate` object for the new CA.
 
 fn create_ca_cert() -> Certificate {
     let key_pair = KeyPair::generate(&rcgen::PKCS_ECDSA_P256_SHA256).unwrap();
@@ -99,6 +141,13 @@ fn create_ca_cert() -> Certificate {
     .unwrap();
     cert
 }
+
+/// Generates a new SSL certificate and private key signed by the specified CA.
+///
+/// # Arguments
+///
+/// * `ca_cert` - The `Certificate` object for the CA to sign the new certificate with.
+/// * `dn_name` - The domain name to generate the certificate for.
 
 fn signed_cert_with_ca(ca_cert: Certificate, dn_name: String) {
     let mut dn = DistinguishedName::new();
