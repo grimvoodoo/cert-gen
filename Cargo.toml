@@ -2,7 +2,7 @@
 name = "cert-gen"
 version = "0.1.0"
 authors = ["Andrew Cleveland andrew.cleveland@hotmail.co.uk"]
-licence = "MIT"
+license = "MIT OR Apache-2.0"
 description = "Generate a self-signed certificate using a ca for use with mtls"
 readme="readme.md"
 homepage="https://github.com/grimvoodoo"
