@@ -7,7 +7,7 @@ description = "Generate a self-signed certificate using a ca for use with mtls"
 readme="readme.md"
 homepage="https://github.com/grimvoodoo"
 repository="https://github.com/grimvoodoo/cert-gen"
-keywords = ["rust", "tls", "mtls", "certificate", "cert", "ca", "self-signed"]
+keywords = ["tls", "mtls", "certificate", "ca", "self-signed"]
 catagories = ["network-programming", "security", "command-line-utilities"]
 edition = "2021"
 
