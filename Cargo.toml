@@ -17,7 +17,7 @@ edition = "2021"
 openssl = "0.10.48"
 pem = "2.0.0"
 rcgen = { version = "0.10.0", features = ["pem", "x509-parser"] }
-ring = "0.16.20"
+ring = "0.17.12"
 rustls = "0.21.0"
 rustls-pemfile = "1.0.2"
 time = "0.3.20"
