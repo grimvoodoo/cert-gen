@@ -14,7 +14,7 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-openssl = "0.10.48"
+openssl = "0.10.72"
 pem = "2.0.0"
 rcgen = { version = "0.10.0", features = ["pem", "x509-parser"] }
 ring = "0.16.20"
